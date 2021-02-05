@@ -31,7 +31,8 @@ public class RNImmersiveModeModule extends ReactContextBaseJavaModule {
     private int currentStatusStyle = View.VISIBLE | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private int currentNavigationStyle = View.VISIBLE | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
-    private boolean hasColorChange = false;
+    private boolean hasStatusColorChange = false;
+    private boolean hasNavigationColorChange = false;
     private int defaultStatusColor;
     private int defaultNavigationColor;
 
@@ -116,7 +117,6 @@ public class RNImmersiveModeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setBarMode(String immersive) {
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             Log.w(ModuleName, "Sdk Version must be >= " + Build.VERSION_CODES.KITKAT);
             return;
@@ -150,45 +150,126 @@ public class RNImmersiveModeModule extends ReactContextBaseJavaModule {
         this.setUiOnUiThread();
     }
 
+    private void _setColorWindowFlags() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Window window = activity.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Log.w(ModuleName, "Sdk Version must be >= " + Build.VERSION_CODES.LOLLIPOP);
+            return;
+        }
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    }
+
+    private void _setStatusBarColor(final String hexColor) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Window window = activity.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Log.w(ModuleName, "Sdk Version must be >= " + Build.VERSION_CODES.LOLLIPOP);
+            return;
+        }
+
+        try {
+            if (hexColor != null) {
+                if (!hasStatusColorChange) {
+                    hasStatusColorChange = true;
+                    defaultStatusColor = window.getStatusBarColor();
+                    defaultNavigationColor = window.getNavigationBarColor();
+                }
+
+                window.setStatusBarColor(Color.parseColor(hexColor));
+                window.setNavigationBarColor(Color.parseColor(hexColor));
+            } else if (hasStatusColorChange) {
+                hasStatusColorChange = false;
+                window.setStatusBarColor(defaultStatusColor);
+                window.setNavigationBarColor(defaultNavigationColor);
+            }
+        } catch (Exception e) {
+            Log.e(ModuleName, e.getMessage());
+        }
+    }
+
+    private void _setNavigationBarColor(final String hexColor) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Window window = activity.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Log.w(ModuleName, "Sdk Version must be >= " + Build.VERSION_CODES.LOLLIPOP);
+            return;
+        }
+
+        try {
+            if (hexColor != null) {
+                if (!hasNavigationColorChange) {
+                    hasNavigationColorChange = true;
+                    defaultNavigationColor = window.getNavigationBarColor();
+                }
+
+                window.setNavigationBarColor(Color.parseColor(hexColor));
+            } else if (hasNavigationColorChange) {
+                hasNavigationColorChange = false;
+                window.setNavigationBarColor(defaultNavigationColor);
+            }
+        } catch (Exception e) {
+            Log.e(ModuleName, e.getMessage());
+        }
+    }
+
     @ReactMethod
     public void setBarColor(final String hexColor) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Activity activity = getCurrentActivity();
-                if (activity != null) {
-                    Window window = activity.getWindow();
-                    if (window != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                _setColorWindowFlags();
+                _setStatusBarColor(hexColor);
+                _setNavigationBarColor(hexColor);
+            }
+        });
+    }
 
-                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    @ReactMethod
+    public void setNavigationBarColor(final String hexColor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _setColorWindowFlags();
+                _setNavigationBarColor(hexColor);
+            }
+        });
+    }
 
-                            try {
-                                if (hexColor != null) {
-                                    if (!hasColorChange) {
-                                        hasColorChange = true;
-                                        defaultStatusColor = window.getStatusBarColor();
-                                        defaultNavigationColor = window.getNavigationBarColor();
-                                    }
-
-                                    window.setStatusBarColor(Color.parseColor(hexColor));
-                                    window.setNavigationBarColor(Color.parseColor(hexColor));
-                                } else if (hasColorChange) {
-                                    hasColorChange = false;
-                                    window.setStatusBarColor(defaultStatusColor);
-                                    window.setNavigationBarColor(defaultNavigationColor);
-                                }
-                            } catch (Exception e) {
-                                Log.e(ModuleName, e.getMessage());
-                            }
-
-                        } else {
-                            Log.w(ModuleName, "Sdk Version must be >= " + Build.VERSION_CODES.LOLLIPOP);
-                        }
-                    }
-                }
+    @ReactMethod
+    public void setStatusBarColor(final String hexColor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _setColorWindowFlags();
+                _setStatusBarColor(hexColor);
             }
         });
     }

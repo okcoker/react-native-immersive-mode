@@ -8,6 +8,21 @@ const checkModule = () => {
     }
 }
 
+const parseColorString = (color) => {
+    let parsed = color;
+
+    if (typeof color === 'string') {
+        if (color.length === 9) {
+            // convert #rgba to #argb
+            parsed = '#' + color.substr(7, 2) + color.substr(1, 6);
+        } else if (color.length === 4) {
+            parsed = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+        }
+    }
+
+    return parsed;
+}
+
 const ImmersiveMode = {
     /**
      * @deprecated
@@ -44,16 +59,17 @@ const ImmersiveMode = {
 
     setBarColor(color) {
         checkModule();
-        if (typeof color === 'string') {
-            if (color.length === 9) {
-                // convert #rgba to #argb
-                color = '#' + color.substr(7, 2) + color.substr(1, 6);
-            } else if (color.length === 4) {
-                color = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
-            }
-        }
+        RNImmersiveMode.setBarColor(parseColorString(color));
+    },
 
-        RNImmersiveMode.setBarColor(color);
+    setStatusBarColor(color) {
+        checkModule();
+        RNImmersiveMode.setStatusBarColor(parseColorString(color));
+    },
+
+    setNavigationBarColor(color) {
+        checkModule();
+        RNImmersiveMode.setNavigationBarColor(parseColorString(color));
     },
 
     addEventListener(callback) {
