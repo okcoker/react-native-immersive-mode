@@ -42,8 +42,8 @@ Note. react-native `>0.60` no need to link
 	```
 ## Usage
 
-### Bar Mode 
-- **Normal** - show status and navigation 
+### Bar Mode
+- **Normal** - show status and navigation
 - **Full**  - hide status and navigation
 - **FullSticky** - hide status and navigation with sticky
 - **Bottom** - hide navigation
@@ -60,6 +60,8 @@ Note. react-native `>0.60` no need to link
  - [setBarStyle](#setbarstyle)
  - [setBarTranslucent](#setbartranslucent)
  - [setBarColor](#setbarcolor)
+ - [setStatusBarColor](#setStatusBarColor)
+ - [setNavigationBarColor](#setNavigationBarColor)
  - [addEventListener](#addeventlistener)
 
 ### fullLayout
@@ -130,6 +132,26 @@ ImmersiveMode.setBarTranslucent(true);
 ### setBarColor
 `setBarColor(color: string): void`
 change status and navigation bar is transparent 50%.
+
+| name | type | description |
+| ---- | ---- | ------------|
+| color | string | `#rgb`, `#rrggbb`, `#rrggbbaa`. if color is `null` will set default color |
+
+> default color is color before changed by `setBarColor`
+
+### setStatusBarColor
+`setStatusBarColor(color: string): void`
+change status bar is transparent 50%.
+
+| name | type | description |
+| ---- | ---- | ------------|
+| color | string | `#rgb`, `#rrggbb`, `#rrggbbaa`. if color is `null` will set default color |
+
+> default color is color before changed by `setBarColor`
+
+### setNavigationBarColor
+`setNavigationBarColor(color: string): void`
+change navigation bar is transparent 50%.
 
 | name | type | description |
 | ---- | ---- | ------------|
