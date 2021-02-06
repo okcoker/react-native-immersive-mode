@@ -30,30 +30,46 @@ interface ImmersiveModeStatic extends ImmersiveModeType {
 
     /**
      * Set system ui mode.
-     * @param mode 
-     * 
+     * @param mode
+     *
      * @deprecated use `setBarMode` instaead.
      */
     setImmersive(mode: ImmersiveModeType): void;
 
     /**
      * Set system ui mode.
-     * @param mode 
+     * @param mode
      */
     setBarMode(mode: ImmersiveBarModeType): void;
 
     /**
      * Set color of system bar.
      * When set color translucent will be disabled.
-     * 
+     *
      * @param color color hex #rrggbbaa. if color is null will set default color
      */
     setBarColor(color: string): void;
 
     /**
+     * Set color of status bar.
+     * When set color translucent will be disabled.
+     *
+     * @param color color hex #rrggbbaa. if color is null will set default color
+     */
+    setStatusBarColor(color: string): void;
+
+    /**
+     * Set color of navigation bar.
+     * When set color translucent will be disabled.
+     *
+     * @param color color hex #rrggbbaa. if color is null will set default color
+     */
+    setNavigationBarColor(color: string): void;
+
+    /**
      * Set style of system bar.
      * System Navigation will be Light, must be change bar color `setBarColor` to other color first.
-     * 
+     *
      * @param style
      */
     setBarStyle(style: ImmersiveBarStyleType): void;
@@ -61,8 +77,8 @@ interface ImmersiveModeStatic extends ImmersiveModeType {
     /**
      * System bar background color is transparent 50%.
      * When `true` bar color will be disabled.
-     * 
-     * @param enable 
+     *
+     * @param enable
      */
     setBarTranslucent(enable: boolean): void;
 
